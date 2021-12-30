@@ -40,7 +40,7 @@ const Manager = new Vue({
             isLogged: false,
             id: '',
             name: '',
-            profile: `${baseURL}/src/assets/images/profile_na.PNG`,
+            profile: `https://elif-lee.github.io/src/assets/images/profile_na.PNG`,
             detail: {
                 isAdmin: false
             }
