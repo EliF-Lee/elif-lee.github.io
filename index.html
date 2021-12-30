@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xQing.tech</title>  
+    <meta name="description" content="@Lee SJ">
+ 
+    <!-- Vue.js -->
+    <script src="./src/js/lib/vue@2.6.0.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <!-- ChartJS -->
+    <!-- <script src="./src/js/lib/chart@2.9.3.js" crossorigin="anonymous"></script> -->
+    <!-- Tailwind -->
+    <link href="./src/css/lib/tailwind.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link href="./src/css/app.css" rel="stylesheet">
+</head>
+<body> 
+    <vue-creaction class="Manager bg-gray-100 font-family-MaruBuri-Regular flex">
+        <!-- PC 메뉴 -->
+        <aside class="relative bg-sidebar h-screen w-64 hidden sm:block shadow-xl">
+            <div class="p-6">
+                <a href="https://elif-lee.github.io/" class="text-white text-3xl font-semibold hover:text-gray-300 font-family-GongGothicMedium">x<span class="text-red-400">Q</span>ing<span class="text-red-400">.</span>tech</a>
+                <button @click="moveToWriteArticle" class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
+                    <i class="fas fa-plus mr-3"></i> 글 작성
+                </button>
+            </div>
+            <nav class="text-white text-base font-semibold pt-3">
+                <a href="index.html" class="flex items-center active-nav-link text-white py-4 pl-6 nav-item">
+                    <i class="fas fa-scroll-old mr-3"></i>
+                    자유 게시판
+                </a>
+                <a v-if="user.isLogged && user.detail.isAdmin" href="#" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                    <i class="far fa-align-left mr-3"></i>
+                    게시글 관리
+                </a>
+                <a v-if="user.isLogged && user.detail.isAdmin" href="#" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                    <i class="fas fa-users-cog mr-3"></i>
+                    권한 관리
+                </a>
+                <a href="mailto:temp_cubicle0m@icloud.com" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                    <i class="far fa-envelope-open-text mr-3"></i>
+                    문의하기
+                </a>
+            </nav>
+            <span class="absolute inset-x-0 bottom-0 text-center pb-4 text-white font-family-GongGothicMedium">
+                Web Version {{ Web_Version }}
+            </span>
+        </aside>
+    
+        <div class="w-full flex flex-col h-screen overflow-y-hidden">
+            <!-- PC 헤더 -->
+            <header class="w-full items-center bg-white py-2 px-6 hidden sm:flex">
+                <div class="w-1/2"></div>
+                <div class="relative w-1/2 flex justify-end">
+                    <button @click="desktop.header.isOpen = !desktop.header.isOpen" class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-300">
+                        <img v-bind:src="user.profile" onerror="this.src='https:\/\/elif-lee.github.io/src/assets/images/profile_nu.PNG'">
+                    </button>
+                    <button v-show="desktop.header.isOpen" @click="desktop.header.isOpen = false" class="h-full w-full fixed inset-0 cursor-default"></button>
+                    <div v-show="desktop.header.isOpen" class="absolute w-32 bg-white rounded-lg shadow-lg py-2 mt-16">
+                        <div v-if="user.isLogged">
+                            <a class="block px-4 py-2 account-link hover:text-white"><i class="fas fa-user mr-3"></i>내 계정</a>
+                            <a @click="logoutFromKakao" class="block px-4 py-2 account-link hover:text-white"><i class="fas fa-sign-out mr-3"></i>로그아웃</a>
+                        </div>
+                        <div v-else>
+                            <a @click="goLoginPage" class="block px-4 py-2 account-link hover:text-white"><i class="fas fa-sign-in mr-3"></i>로그인</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+    
+            <!-- 모바일 헤더 -->
+            <header class="w-full bg-sidebar py-5 px-6 sm:hidden">
+                <div class="flex items-center justify-between">
+                    <a href="https://elif-lee.github.io/" class="text-white font-family-GongGothicMedium"><span class="text-3xl font-semibold hover:text-gray-300">x<span class="text-red-400">Q</span>ing<span class="text-red-400">.</span>tech</span><br><span class="text-xs">Web Version {{ Web_Version }}</span></a>
+                    <button @click="toggleMenu" class="text-white text-3xl focus:outline-none">
+                        <i v-show="mobile.menu.isOpen" class="fas fa-times"></i>
+                        <i v-show="!mobile.menu.isOpen" class="fas fa-bars"></i>
+                    </button>
+                </div>
+    
+                <!-- 모바일 메뉴 -->
+                <nav v-bind:class="mobile.menu.style">
+                    <button @click="moveToWriteArticle" class="w-full bg-white cta-btn font-semibold py-2 mb-3 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
+                        <i class="fas fa-plus mr-3"></i> 글 작성
+                    </button>
+                    <a href="index.html" class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                        <i class="fas fa-scroll-old mr-3"></i>
+                        자유 게시판
+                    </a>
+                    <a v-if="user.isLogged && user.detail.isAdmin" href="#" class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                        <i class="far fa-align-left mr-3"></i>
+                        게시글 관리
+                    </a>
+                    <a v-if="user.isLogged && user.detail.isAdmin" href="#" class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                        <i class="fas fa-users-cog mr-3"></i>
+                        권한 관리
+                    </a>
+                    <a href="mailto:temp_cubicle0m@icloud.com" class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                        <i class="far fa-envelope-open-text mr-3"></i>
+                        문의하기
+                    </a>
+                    <div v-if="user.isLogged">
+                        <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                            <i class="fas fa-user mr-3"></i>
+                            내 계정
+                        </a>
+                        <a @click="logoutFromKakao" class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                            <i class="fas fa-sign-out-alt mr-3"></i>
+                            로그아웃
+                        </a>
+                    </div>
+                    <a v-else @click="goLoginPage" class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                        <i class="fas fa-sign-in mr-3"></i>
+                        로그인
+                    </a>
+                </nav>
+            </header>
+        
+            <div class="w-full overflow-x-hidden border-t flex flex-col">
+                <main class="w-full flex-grow p-6">
+                    <h1 class="text-3xl text-black pb-6">자유 게시판</h1>
+
+                    <div class="w-full mt-6">
+                        <div>
+                            <ul class="flex border-b">
+                                <li class="-mb-px mr-1" @click="changeTabStatus(1)">
+                                    <a v-bind:class="article.articleTab.tabStatus === 1 ? 'border-l border-t border-r rounded-t text-blue-700 font-semibold' : 'text-blue-500 hover:text-blue-800'" class="bg-white inline-block py-2 px-4 font-semibold">전체 글</a>
+                                </li>
+                                <li class="mr-1" @click="changeTabStatus(2)">
+                                    <a v-bind:class="article.articleTab.tabStatus === 2 ? 'border-l border-t border-r rounded-t text-blue-700 font-semibold' : 'text-blue-500 hover:text-blue-800'" class="bg-white inline-block py-2 px-4 font-semibold">전체 공지</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6">
+                            <div id="articleList" v-show="article.articleTab.tabStatus === 1" v-html="article.articleList.allArticlesTemplate"></div>
+                            <div id="announceList" v-show="article.articleTab.tabStatus === 2" v-html="article.articleList.announceArticlesTemplate"></div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            <div class="text-center font-family-ImcreSoojin text-gray-500 p-2">
+                <span>Copyright 2021. </span>
+                <span class="text-xl">
+                    <span v-bind:class="style.copyrightGradient">
+                        Lee SJ
+                    </span>
+                </span>
+                <span>. All rights reserved.</span>
+            </div>
+        </div>
+
+        <div v-show="loadingStatus.isLoading" class="h-full w-full fixed inset-0 cursor-default bg-gray-300 bg-opacity-50 z-20">
+            <div class="h-screen items-center flex">
+                <div class="mt-auto mb-auto ml-auto mr-auto">
+                    <p class="text-center pb-4">
+                        <i class="fas fa-spinner fa-pulse text-4xl"></i>
+                    </p>
+                    <p class="text-center">
+                        {{ loadingStatus.message }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!--Header Alert-->
+        <div v-if="alertBanner.closed === false" class="alert-banner w-full fixed top-0 z-20">
+            <input type="checkbox" class="hidden" id="banneralert" v-model="alertBanner.closed">
+            <label class="close cursor-pointer flex items-center justify-between w-full p-2 bg-red-500 shadow text-white" for="banneralert">
+                {{ alertBanner.message }}
+                <svg class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                    <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                </svg>
+            </label>
+        </div>
+    </vue-creaction>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script>
+    <script src="./src/js/app.js?v=1.0.0"></script>
+    <script>
+        $(function() {
+            getArticleList();
+            colorGradient();
+        });
+    </script>
+</body>
+</html>
