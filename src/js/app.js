@@ -205,7 +205,7 @@ function checkWebVersion()
 
 function viewArticle(id, isPrivate, authorId = '') 
 {
-    if (isPrivate && (authorId !== Manager.user.id || Manager.user.detail.isAdmin)) 
+    if (isPrivate && (authorId !== Manager.user.id || !Manager.user.detail.isAdmin)) 
     {
         return alert('비공개 글은 작성자와 관리자만 확인할 수 있습니다.');
     }
