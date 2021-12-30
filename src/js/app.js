@@ -5,10 +5,10 @@
  * @author : EliF_Lee 
  */
 
-const checkHttps = false;
-const checkVersion = false;
-const secureCookie = false;
-const useShortLink = false;
+const checkHttps = true;
+const checkVersion = true;
+const secureCookie = true;
+const useShortLink = true;
 
 const baseURL = 'https://api.xqing.tech/Forum';
 // const baseURL = 'http://localhost:3000';
