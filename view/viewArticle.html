@@ -140,10 +140,6 @@
                                 <span v-html="article.view.author.nickname"></span>
                                 <span v-if="article.view.author.isAdmin" class="fa-stack -mx-1" style="font-size: 0.6em;"title="관리자">
                                     <i class="fas fa-certificate fa-stack-2x" style="color: dimgray;"></i>
-                                    <i class="fad fa-check-double fa-stack-1x" style="--fa-primary-color: limegreen; --fa-secondary-color: limegreen; --fa-secondary-opacity: 1.0;"></i>
-                                </span>
-                                <span v-else-if="article.view.author.isStudent" class="fa-stack -mx-1" style="font-size: 0.6em;"title="학생">
-                                    <i class="fas fa-certificate fa-stack-2x" style="color: dimgray;"></i>
                                     <i class="fas fa-check fa-stack-1x" style="color: limegreen;"></i>
                                 </span>
                             </p>

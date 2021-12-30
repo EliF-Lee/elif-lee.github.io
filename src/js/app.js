@@ -798,7 +798,7 @@ function showComments(array)
                     <p class="text-base">
                         <span>${decodeURIComponent(atob(array[i].nickname).replaceAll('+', '&nbsp;'))}</span>
                         ${
-                            (array.articleList[i].author.isAdmin)
+                            (array[i].isAdmin)
                             ? `<span class="fa-stack -mx-1" style="font-size: 0.5em;" title="관리자">
                                     <i class="fas fa-certificate fa-stack-2x" style="color: dimgray;"></i>
                                     <i class="fas fa-check fa-stack-1x" style="color: limegreen;"></i>
