@@ -8,7 +8,7 @@
 const checkHttps = true;
 const checkVersion = true;
 const secureCookie = true;
-const useShortLink = true;
+const useShortLink = false;
 
 const baseURL = 'https://api.xqing.tech/Forum';
 // const baseURL = 'http://localhost:3000';
@@ -108,7 +108,8 @@ const Manager = new Vue({
         },
         CopyURL: function() 
         {
-            let copyText = `${baseURL}/view/${this.article.view.id}`;
+            let copyText = `https://elif-lee.github.io/view/viewArticle.html?id=${this.article.view.id}`;
+            if (useShortLink) { copyText= `https://elif-lee.github.io/view/${this.article.view.id}`; }
             navigator.clipboard.writeText(copyText);
             this.article.view.menu.articleURLStatus = `<i class="fas fa-check-circle mr-3" style="color: limegreen"></i>URL 복사 완료`;
         },
