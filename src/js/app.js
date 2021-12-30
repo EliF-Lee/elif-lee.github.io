@@ -568,7 +568,8 @@ function writeArticle()
             {
                 Manager.article.articleStatus = 'success';
                 setTimeout(function() { 
-                    location.href = `view/${response.detail.articleId}`;
+                    if (useShortLink) { location.href = `view/${response.detail.articleId}`; } 
+                    else location.href = `view/viewArticle.html?id=${response.detail.articleId}`;
                 }, 500);
             } 
             else 
