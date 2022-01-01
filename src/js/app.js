@@ -591,9 +591,8 @@ function urlParam(name)
 {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-
-    if (urlParams.has(name)) { return urlParams.get(name); } 
-    else { return false; }
+    if (!urlParams.has(name)) { return false; } 
+    return urlParams.get(name);
 }
 
 function checkAbletoDelete(authorId) 
